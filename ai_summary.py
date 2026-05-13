@@ -1,14 +1,13 @@
-import google.generativeai as genai
 import os
 from dotenv import load_dotenv
+from google import genai
 
 load_dotenv()
 
 
 def generate_summary(analysis_results):
     api_key = os.getenv("GEMINI_API_KEY")
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    client = genai.Client(api_key=api_key)
 
     prompt = f"""
     You are a professional data analyst. Below are the results of an analysis performed on an Amazon product dataset.
@@ -44,5 +43,8 @@ def generate_summary(analysis_results):
     Write the summary in a professional tone suitable for a business report.
     """
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
     return response.text
